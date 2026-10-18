@@ -4,35 +4,527 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pizarra Matemática Inteligente</title>
 <style>
-:root{font-family:system-ui,Arial,sans-serif;color:#19314b;background:#edf2f8}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid #cbd7e6;background:#fff;color:#173757;border-radius:9px;padding:9px 12px}button:hover{background:#e8f1fc}button.active,.primary{background:#16558c;color:#fff;border-color:#16558c}button:disabled{opacity:.45;cursor:not-allowed}header{background:#123e68;color:#fff;padding:13px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}header h1{font-size:1.35rem;margin:0}header small{opacity:.85}.wrap{max-width:1500px;margin:auto;padding:16px}.panel{background:white;border:1px solid #d6e0ec;border-radius:13px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #152b4210}.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.row label{display:flex;align-items:center;gap:5px}.row input:not([type=color]):not([type=file]),.row select{padding:8px;border:1px solid #bac8d8;border-radius:7px;max-width:240px}h2{font-size:1.06rem;margin:0 0 10px}.sub{font-size:.85rem;color:#566b80}.tutors{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}.tutor{padding:9px 4px;display:flex;align-items:center;flex-direction:column;gap:5px}.avatar{height:53px;width:53px;border-radius:50%;background:#e1eaf5;display:grid;place-items:center;font-size:23px;border:2px dashed #9ab0c8}.tutor.active .avatar{border:2px solid #fff}.layout{display:grid;grid-template-columns:minmax(250px,0.8fr) minmax(350px,1.45fr);gap:14px;align-items:start}.reference{width:100%;height:520px;border:1px solid #d0dbe8;border-radius:8px;background:#f7f9fc}.reference img{max-width:100%;max-height:100%;object-fit:contain}.refholder{height:520px;display:flex;align-items:center;justify-content:center;color:#6c7f92;text-align:center;padding:20px}.tools{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.paper-viewport{overflow:auto;max-height:78vh;background:#cbd6e4;padding:15px;border-radius:10px}.sheet{width:min(100%,794px);aspect-ratio:210/297;position:relative;margin:0 auto;background:white;box-shadow:0 3px 12px #102a4033;overflow:hidden;touch-action:none}.sheet.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 29px,#d4e1f1 30px)}.sheet.grid{background-image:linear-gradient(#dce8f4 1px,transparent 1px),linear-gradient(90deg,#dce8f4 1px,transparent 1px);background-size:24px 24px}.sheet canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.sheet .typed{position:absolute;min-width:110px;max-width:85%;padding:3px 5px;white-space:pre-wrap;overflow-wrap:anywhere;color:#173757;background:#ffffffb8;border:1px dashed #86a5c7;border-radius:4px;cursor:move;z-index:2}.typed textarea{width:220px;min-height:72px;border:0;background:transparent;resize:both;color:inherit}.typed .remove{position:absolute;right:-11px;top:-13px;border-radius:50%;padding:0;width:22px;height:22px;font-size:13px;background:#fff}.footer{font-size:.82rem;color:#64758a;margin-top:10px}.hint{padding:11px;border-left:4px solid #2b75a6;background:#eef6ff;border-radius:7px;margin-top:10px}.hidden{display:none!important}.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;max-width:300px}.calc button{padding:10px}.calc input{grid-column:1/-1;padding:10px;border:1px solid #becddd;border-radius:6px;width:100%}dialog{border:0;border-radius:12px;padding:20px;max-width:95vw;box-shadow:0 20px 60px #0005}dialog::backdrop{background:#132b4470}#printArea{display:none}#status{font-size:.83rem;color:#345f86}details summary{cursor:pointer;font-weight:650}input[type=color]{height:35px;width:44px}textarea#question{width:100%;min-height:70px;border:1px solid #b8cadc;border-radius:7px;padding:9px}#modeMessage{font-size:.85rem;color:#4e6b83}@media(max-width:850px){.layout{grid-template-columns:1fr}.reference,.refholder{height:320px}.wrap{padding:8px}.paper-viewport{padding:6px}.sheet{min-width:310px}}@media print{@page{size:A4;margin:0}body{background:white}body>*:not(#printArea){display:none!important}#printArea{display:block!important}.print-sheet{position:relative;width:210mm;height:297mm;page-break-after:always;break-after:page;background:white;overflow:hidden}.print-sheet:last-child{page-break-after:auto;break-after:auto}.print-sheet.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 7.7mm,#d4e1f1 7.9mm)}.print-sheet.grid{background-image:linear-gradient(#dce8f4 1px,transparent 1px),linear-gradient(90deg,#dce8f4 1px,transparent 1px);background-size:6.35mm 6.35mm}.print-sheet img{position:absolute;inset:0;width:100%;height:100%}.print-sheet .print-text{position:absolute;white-space:pre-wrap;font-size:12pt;max-width:85%;overflow-wrap:anywhere}.print-heading{position:absolute;z-index:4;top:9mm;left:12mm;right:12mm;background:#ffffffeb;padding:5mm;border-bottom:1px solid #aaa;font-size:11pt}.print-page{position:absolute;bottom:7mm;right:12mm;font-size:9pt;background:#fff;padding:2mm}}
+:root{font-family:system-ui,Arial,sans-serif;color:#19314b;background:#edf2f8}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid #cbd7e6;background:#fff;color:#173757;border-radius:9px;padding:9px 12px}button:hover{background:#e8f1fc}button.active,.primary{background:#16558c;color:#fff;border-color:#16558c}button:disabled{opacity:.45;cursor:not-allowed}header{background:#123e68;color:#fff;padding:13px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}header h1{font-size:1.35rem;margin:0}header small{opacity:.85}.wrap{max-width:1500px;margin:auto;padding:16px}.panel{background:white;border:1px solid #d6e0ec;border-radius:13px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #152b4210}.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.row label{display:flex;align-items:center;gap:5px}.row input:not([type=color]):not([type=file]),.row select{padding:8px;border:1px solid #bac8d8;border-radius:7px;max-width:240px}h2{font-size:1.06rem;margin:0 0 10px}.sub{font-size:.85rem;color:#566b80}.tutors{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}.tutor{padding:9px 4px;display:flex;align-items:center;flex-direction:column;gap:5px}.avatar{height:53px;width:53px;border-radius:50%;background:#e1eaf5;display:grid;place-items:center;font-size:23px;border:2px dashed #9ab0c8}.tutor.active .avatar{border:2px solid #fff}.layout{display:grid;grid-template-columns:minmax(250px,0.8fr) minmax(350px,1.45fr);gap:14px;align-items:start}.reference{width:100%;height:520px;border:1px solid #d0dbe8;border-radius:8px;background:#f7f9fc}.reference img{max-width:100%;max-height:100%;object-fit:contain}.refholder{height:520px;display:flex;align-items:center;justify-content:center;color:#6c7f92;text-align:center;padding:20px}.tools{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.paper-viewport{overflow:auto;max-height:78vh;background:#cbd6e4;padding:15px;border-radius:10px}.sheet{width:min(100%,794px);aspect-ratio:210/297;position:relative;margin:0 auto;background:white;box-shadow:0 3px 12px #102a4033;overflow:hidden;touch-action:none}.sheet.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 29px,#d4e1f1 30px)}.sheet.grid{background-image:linear-gradient(#dce8f4 1px,transparent 1px),linear-gradient(90deg,#dce8f4 1px,transparent 1px);background-size:24px 24px}.sheet canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.sheet .typed{position:absolute;min-width:110px;max-width:85%;padding:3px 5px;white-space:pre-wrap;overflow-wrap:anywhere;color:#173757;background:#ffffffb8;border:1px dashed #86a5c7;border-radius:4px;cursor:move;z-index:2}.typed textarea{width:220px;min-height:72px;border:0;background:transparent;resize:both;color:inherit}.typed .remove{position:absolute;right:-11px;top:-13px;border-radius:50%;padding:0;width:22px;height:22px;font-size:13px;background:#fff}.footer{font-size:.82rem;color:#64758a;margin-top:10px}.hint{padding:11px;border-left:4px solid #2b75a6;background:#eef6ff;border-radius:7px;margin-top:10px}.hidden{display:none!important}.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;max-width:300px}.calc button{padding:10px}.calc input{grid-column:1/-1;padding:10px;border:1px solid #becddd;border-radius:6px;width:100%}dialog{border:0;border-radius:12px;padding:20px;max-width:95vw;box-shadow:0 20px 60px #0005}dialog::backdrop{background:#132b4470}#printArea{display:none}#status{font-size:.83rem;color:#345f86}details summary{cursor:pointer;font-weight:650}input[type=color]{height:35px;width:44px}textarea#question{width:100%;min-height:70px;border:1px solid #b8cadc;border-radius:7px;padding:9px}#modeMessage{font-size:.85rem;color:#4e6b83}@media(max-width:850px){.layout{grid-template-columns:1fr}.reference,.refholder{height:320px}.wrap{padding:8px}.paper-viewport{padding:6px}.sheet{min-width:310px}}@media print{@page{size:A4;margin:0}body{background:white}body>*:not(#printArea){display:none!important}#printArea{display:block!important}.print-sheet{position:relative;width:210mm;height:297mm;page-break-after:always;break-after:page;background:white;overflow:hidden}.print-sheet:last-child{page-break-after:auto;break-after:auto}.print-sheet.ruled{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 7.7mm,#d4e1f1 7.9mm)}.print-sheet.grid{background-image:linear-gradient(#dce8f4 1px,transparent 1px),linear-gradient(90deg,#dce8f4 1px,transparent 1px);background-size:6.35mm 6.35mm}.print-sheet img{position:absolute;inset:0;width:100%;height:100%}.print-sheet .print-text{position:absolute;white-space:pre-wrap;font-size:12pt;max-width:80%;width:80%;overflow-wrap:anywhere;line-height:1.45}.print-heading{position:absolute;z-index:4;top:9mm;left:12mm;right:12mm;background:#ffffffeb;padding:5mm;border-bottom:1px solid #aaa;font-size:11pt}.print-page{position:absolute;bottom:7mm;right:12mm;font-size:9pt;background:#fff;padding:2mm}}
+</style>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)'], ['$', '$']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script defer src="https://unpkg.com/mathlive@0.104.2/dist/mathlive.min.js"></script>
+<style>
+#tutorResponse{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;overflow-x:auto}#tutorResponse mjx-container[display="true"]{margin:12px 0!important}.math-preview{padding:12px;margin:9px 0;border:1px solid #b9cde1;border-radius:9px;background:#f7fbff;min-height:54px;overflow-x:auto;white-space:pre-wrap}
+.math-editor{display:block;width:100%;min-height:75px;border:1px solid #a6bdd5;border-radius:8px;padding:10px;background:white;font-size:1.35rem}
+.math-tools{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:5px;margin:10px 0}
+.math-tools button{padding:9px 4px;font-size:1rem;min-height:43px}
+.sheet .typed.math-typed{min-width:80px;max-width:88%;background:#ffffffdb;white-space:normal}
+.math-typed .math-content{font-size:19px;min-width:85px;min-height:32px;padding:7px 5px;cursor:move;overflow-x:auto}
+.math-typed .math-edit{font-size:12px;padding:3px 6px;margin:2px}
+.math-typed .remove{z-index:5}
+.print-text.math-print{white-space:normal;font-size:16pt;width:auto;max-width:85%}
+#printArea .math-print mjx-container{margin:0!important}
+</style>
+<style>
+/* Bloques editables y arrastrables sin superposición */
+#textLayer{position:absolute;inset:0;pointer-events:none;z-index:3}
+#textLayer .typed{pointer-events:auto;min-width:150px;width:min(80%,635px);max-width:88%;padding:30px 9px 8px;box-sizing:border-box;cursor:default;touch-action:auto}
+#textLayer .typed.math-typed{width:max-content;min-width:200px;max-width:85%;padding-top:28px;padding-bottom:3px}
+#textLayer .typed textarea{display:block;width:100%;min-height:46px;height:auto;resize:vertical;line-height:1.45;overflow-y:hidden;cursor:text;box-sizing:border-box}
+#textLayer .typed .drag-handle{position:absolute;top:0;left:0;right:23px;height:27px;display:flex;align-items:center;padding:3px 8px;background:#e9f3ff;border-bottom:1px solid #c0d7f0;border-radius:4px 4px 0 0;cursor:grab;touch-action:none;user-select:none;font-size:12px;color:#245c88;z-index:4}
+#textLayer .typed .drag-handle:active{cursor:grabbing}
+#textLayer .typed .remove{z-index:6}
+#textLayer .math-typed .math-content{cursor:default;white-space:normal}
+#tutorChat{display:flex;flex-direction:column;gap:10px;max-height:390px;overflow-y:auto;margin-top:12px;padding:8px;background:#f6f9fd;border-radius:9px}#tutorChat:empty{display:none}.chat-msg{padding:10px 12px;border-radius:11px;line-height:1.55;overflow-wrap:anywhere;white-space:pre-wrap}.chat-msg.student{background:#dfeefe;margin-left:18px}.chat-msg.assistant{background:white;border:1px solid #d3e1ef;margin-right:12px}.chat-msg strong{display:block;font-size:.8rem;margin-bottom:5px}.chat-msg mjx-container[display="true"]{margin:10px 0!important}
 </style>
 </head>
 <body>
-<header><div><h1>✏️ Pizarra Matemática Inteligente</h1><small>Resolvé, practicá y conservá tu trabajo</small></div><div class="row"><button id="save" class="primary">💾 Guardar</button><button id="print" class="primary">📄 Descargar PDF</button></div></header>
+<header><div><h1>✏️ Pizarra Matemática Inteligente</h1><small>Resolvé, practicá y conservá tu trabajo</small></div><div class="row"><button id="save" class="primary">💾 Guardar</button><button id="print" class="primary">📄 Descargar PDF</button><button id="deliverWork" class="primary" type="button">📤 Entregar trabajo</button></div></header>
 <div class="wrap">
 <section class="panel"><div class="row"><label>Modalidad <select id="mode"><option value="individual">Individual</option><option value="aula">Aula</option></select></label><label>Actividad <select id="kind"><option>Práctica</option><option>Escrito</option><option>Parcial</option><option>Examen</option><option>Borrador</option></select></label><label>Hoja <select id="paper"><option value="white">Blanca</option><option value="ruled">Rayada</option><option value="grid">Cuadriculada</option></select></label><span id="status"></span></div><div class="row" style="margin-top:10px"><label>Nombre <input id="student" placeholder="Nombre y apellido"></label><label>Grupo <input id="group" placeholder="Ej. 8.º 4"></label><label>Docente <input id="teacher" placeholder="Docente"></label><label>Fecha <input id="date" type="date"></label></div><p id="modeMessage"></p></section>
-<section class="panel"><details id="tutorDetails"><summary>👥 Elegir tutor o tutora virtual · <span id="selectedTutor">Pocho</span></summary><p class="sub">Los avatares definitivos se podrán cargar después. La IA conversacional todavía no está conectada.</p><div id="tutors" class="tutors"></div></details></section>
-<section class="panel"><div class="row"><label style="flex:1;min-width:230px">Consigna <input id="exercise" style="width:100%;max-width:none" placeholder="Escribí o pegá el ejercicio"></label><button id="addExercise">Agregar consigna a la hoja</button></div></section>
-<div class="layout"><aside><section class="panel"><h2>📚 Teoría, ejemplos y archivos</h2><p class="sub">Cargá un PDF, imagen o TXT para consultarlo mientras resolvés. El archivo queda en este dispositivo.</p><input id="referenceFile" type="file" accept="application/pdf,image/*,.txt,text/plain"><div id="referenceView" class="refholder">Seleccioná un archivo de teoría o ejercicios.</div><div class="row"><button id="openReference" disabled>Abrir en otra pestaña</button><button id="closeReference">Ocultar material</button></div></section><section class="panel"><h2>🧮 Calculadora científica</h2><div class="calc" id="calc"><input id="calcInput" aria-label="Expresión" placeholder="Ej. sqrt(16)+2^3"><button data-c="7">7</button><button data-c="8">8</button><button data-c="9">9</button><button data-c="/">÷</button><button data-c="4">4</button><button data-c="5">5</button><button data-c="6">6</button><button data-c="*">×</button><button data-c="1">1</button><button data-c="2">2</button><button data-c="3">3</button><button data-c="-">−</button><button data-c="0">0</button><button data-c=".">.</button><button data-c="(">(</button><button data-c="+">+</button><button data-c=")">)</button><button data-c="^">xʸ</button><button data-c="sqrt(">√</button><button id="calcEq" class="primary">=</button><button id="calcClear">C</button><button data-c="sin(">sin</button><button data-c="cos(">cos</button><button data-c="pi">π</button></div><p class="sub">Trigonometría en radianes. Esta calculadora no resuelve ecuaciones simbólicas.</p></section><section class="panel"><h2>💡 Ayuda del tutor</h2><p class="sub">La conversación con IA y la digitalización de escritura se conectarán en una etapa posterior.</p><textarea id="question" placeholder="Escribí aquí qué parte del ejercicio no entendés"></textarea><div class="row"><button id="askTutor">Pedir ayuda</button><button id="digitize">Digitalizar escritura</button></div><div id="tutorResponse" class="hint hidden"></div></section></aside>
-<main><section class="panel"><div class="row"><h2 style="margin:0">📝 Hoja de resolución</h2><span id="pageCount" class="sub"></span></div><div class="tools"><button data-tool="pen" class="active">✏️ Lápiz</button><button data-tool="eraser">🧽 Borrador</button><button data-tool="text">⌨️ Texto</button><label>Color <input id="ink" type="color" value="#174f9b"></label><label>Grosor <input id="thickness" type="range" min="1" max="18" value="3"></label><button id="undo">↶ Deshacer</button><button id="clear">Limpiar hoja</button></div><div class="paper-viewport"><div id="sheet" class="sheet"><canvas id="drawing"></canvas><div id="textLayer"></div></div></div><div class="tools"><button id="previous">← Anterior</button><button id="next">Siguiente →</button><button id="newPage" class="primary">＋ Nueva página</button><button id="deletePage">Eliminar página</button></div><p class="sub">En modo Texto, tocá una zona de la hoja para escribir con el teclado. En modo Lápiz, dibujá con el dedo, mouse o lápiz digital.</p></section></main></div>
-<footer class="footer">Los trabajos se guardan localmente en este navegador. Para distribuir actividades, recibir entregas o utilizar IA real hará falta un servicio adicional y una configuración segura.</footer></div>
+<section class="panel"><details id="tutorDetails"><summary>👥 Elegir tutor o tutora virtual · <span id="selectedTutor">Pocho</span></summary><p class="sub">Los avatares definitivos se podrán cargar después. Elegí tu tutor. Las imágenes definitivas se cargarán más adelante.</p><div id="tutors" class="tutors"></div></details></section>
+<section class="panel"><div class="row"><label style="flex:1;min-width:230px">Consigna <textarea id="exercise" style="width:100%;min-height:80px;border:1px solid #bac8d8;border-radius:7px;padding:8px" placeholder="Escribí o pegá texto y ecuaciones LaTeX"></textarea></label><button id="addExercise">Agregar consigna a la hoja</button><button id="uploadExercise" type="button">📷 Cargar consigna</button><button id="clearExercise" type="button" title="Vaciar la consigna para escribir o cargar otra">🗑️ Borrar consigna</button><input id="exerciseFile" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" hidden><div id="exercisePreview" class="math-preview" style="width:100%;margin-top:8px" aria-label="Vista previa de la consigna"></div></div></section>
+<div class="layout"><aside><section class="panel"><h2>📚 Teoría, ejemplos y archivos</h2><p class="sub">Cargá un PDF, imagen o TXT para consultarlo mientras resolvés. El archivo queda en este dispositivo.</p><input id="referenceFile" type="file" accept="application/pdf,image/*,.txt,text/plain"><div id="referenceView" class="refholder">Seleccioná un archivo de teoría o ejercicios.</div><div class="row"><button id="openReference" disabled>Abrir en otra pestaña</button><button id="closeReference">Ocultar material</button></div></section><section class="panel"><h2>🧮 Calculadora científica</h2><div class="calc" id="calc"><input id="calcInput" aria-label="Expresión" placeholder="Ej. sqrt(16)+2^3"><button data-c="7">7</button><button data-c="8">8</button><button data-c="9">9</button><button data-c="/">÷</button><button data-c="4">4</button><button data-c="5">5</button><button data-c="6">6</button><button data-c="*">×</button><button data-c="1">1</button><button data-c="2">2</button><button data-c="3">3</button><button data-c="-">−</button><button data-c="0">0</button><button data-c=".">.</button><button data-c="(">(</button><button data-c="+">+</button><button data-c=")">)</button><button data-c="^">xʸ</button><button data-c="sqrt(">√</button><button id="calcEq" class="primary">=</button><button id="calcClear">C</button><button data-c="sin(">sin</button><button data-c="cos(">cos</button><button data-c="pi">π</button></div><p class="sub">Trigonometría en radianes. Esta calculadora no resuelve ecuaciones simbólicas.</p></section><section class="panel"><h2>💡 Ayuda del tutor</h2><p class="sub">Consultá a tu tutor o digitalizá la escritura de la página actual. Revisá siempre el reconocimiento.</p><textarea id="question" placeholder="Escribí aquí qué parte del ejercicio no entendés"></textarea><div class="row"><button id="askTutor">Pedir ayuda</button><button id="digitize">✍️ Digitalizar escritura</button><button id="recognizeReference">🔎 Reconocer archivo</button></div><div class="row" style="margin-top:9px"><button id="clearTutorChat" type="button">🗑️ Nueva conversación</button><span class="sub">El tutor recuerda las preguntas de esta conversación.</span></div><div id="tutorChat" aria-live="polite"></div><div id="tutorResponse" class="hint hidden"></div><div id="recognitionPanel" class="hint hidden"><label for="recognizedText"><strong>Texto reconocido (revisá y corregí)</strong></label><textarea id="recognizedText" style="width:100%;min-height:100px;margin-top:8px" aria-label="Texto matemático reconocido"></textarea><div id="recognizedPreview" class="math-preview" aria-label="Vista matemática del reconocimiento"></div><div class="row"><button id="insertRecognized">Agregar texto a la hoja</button><button id="askRecognized">Consultar al tutor</button></div><p class="sub">La escritura original se conserva. El reconocimiento automático puede cometer errores.</p></div></section></aside>
+<main><section class="panel"><div class="row"><h2 style="margin:0">📝 Hoja de resolución</h2><span id="pageCount" class="sub"></span></div><div class="tools"><button data-tool="pen" class="active">✏️ Lápiz</button><button data-tool="eraser">🧽 Borrador</button><button data-tool="text">⌨️ Texto</button><button id="openMathEditor" type="button">∑ Texto matemático</button><button id="openGraph" type="button">📈 Gráficas</button><button id="openPractice" type="button">✨ Práctica con IA</button><label>Color <input id="ink" type="color" value="#174f9b"></label><label>Grosor <input id="thickness" type="range" min="1" max="18" value="3"></label><button id="undo">↶ Deshacer</button><button id="clear">Limpiar hoja</button></div><div class="paper-viewport"><div id="sheet" class="sheet"><canvas id="drawing"></canvas><div id="textLayer"></div></div></div><div class="tools"><button id="previous">← Anterior</button><button id="next">Siguiente →</button><button id="newPage" class="primary">＋ Nueva página</button><button id="deletePage">Eliminar página</button></div><p class="sub">En modo Texto, tocá una zona de la hoja para escribir con el teclado. En modo Lápiz, dibujá con el dedo, mouse o lápiz digital.</p></section></main></div>
+<footer class="footer">Los trabajos se guardan localmente en este navegador. Los trabajos se guardan en este navegador. La IA funciona solo desde la aplicación de Apps Script con acceso autorizado. No ingreses datos personales en las consultas.</footer></div>
+<dialog id="mathDialog" style="width:min(650px,96vw)">
+<h2>∑ Editor matemático táctil</h2>
+<p class="sub">Tocá una expresión para insertarla donde está el cursor. También podés escribir con el teclado. La fórmula se verá en la hoja y en el PDF.</p>
+<math-field id="mathField" class="math-editor" virtual-keyboard-mode="manual" aria-label="Editor de fórmulas"></math-field>
+<div id="mathButtons" class="math-tools"></div>
+<div class="row"><button id="mathKeyboard" type="button">⌨️ Teclado matemático</button><button id="mathSave" class="primary" type="button">Agregar a la hoja</button><button id="mathCancel" type="button">Cancelar</button></div>
+<p id="mathEditorStatus" class="sub"></p>
+</dialog>
+<dialog id="deliveryDialog" style="width:min(510px,96vw)">
+<h2>📤 Entregar trabajo al docente</h2>
+<p class="sub">El estudiante elige el correo del destinatario. Primero guardá el PDF y después adjuntalo al mensaje.</p>
+<label for="deliveryEmail" style="display:block;margin-bottom:5px">Correo del destinatario</label>
+<input id="deliveryEmail" type="email" autocomplete="email" placeholder="docente@institucion.edu.uy" style="width:100%;padding:10px;border:1px solid #bac8d8;border-radius:7px" required>
+<p id="deliveryInfo" class="sub"></p>
+<div class="row"><button id="deliveryPdf" type="button">1. Guardar trabajo en PDF</button><button id="deliveryMail" class="primary" type="button">2. Preparar correo</button><button id="deliveryClose" type="button">Cerrar</button></div>
+<p class="sub"><strong>Importante:</strong> el correo no adjunta automáticamente el PDF. Seleccioná el archivo guardado y pulsá Enviar en tu aplicación de correo. No se envía nada sin tu confirmación.</p>
+</dialog>
+<dialog id="graphDialog" style="width:min(850px,97vw);max-height:92vh;overflow:auto">
+<h2>📈 Laboratorio de Gráficas</h2><p class="sub">Escribí una función, agregá puntos o completá una tabla. El gráfico se actualiza al pulsar «Graficar».</p>
+<div class="row"><label>Modo <select id="graphMode"><option value="function">Función</option><option value="points">Puntos</option><option value="table">Tabla</option><option value="verify">Verificar estudio analítico</option></select></label><label>Escala (unidades por división) <input id="graphScale" type="number" min="0.1" max="100" step="0.5" value="1" style="width:90px"></label></div>
+<div id="graphFunctionPanel"><label>f(x) = <input id="graphFunction" value="2*x+1" placeholder="Ej.: x^2-4, sin(x), sqrt(x)" style="width:min(440px,90%);padding:8px"></label><p class="sub">Admite +, −, *, /, ^, paréntesis, sin, cos, tan, sqrt, abs, log, exp y pi. Para multiplicar, escribí 2*x.</p></div>
+<div id="graphPointsPanel" class="hidden"><label>Coordenadas (una por línea, separadas por punto y coma) <textarea id="graphPoints" style="display:block;width:100%;min-height:105px" placeholder="-2; -3
+0; 1
+2; 5">-2; -3
+0; 1
+2; 5</textarea></label></div>
+<div id="graphTablePanel" class="hidden"><label>Tabla x ; f(x) (una fila por línea) <textarea id="graphTable" style="display:block;width:100%;min-height:105px" placeholder="-2; -3
+-1; -1
+0; 1
+1; 3">-2; -3
+-1; -1
+0; 1
+1; 3</textarea></label><label><input id="graphConnect" type="checkbox" checked> Unir los puntos en orden</label></div>
+<div id="graphVerifyPanel" class="hidden" style="padding:12px;background:#f4f8fe;border-radius:9px;margin-top:9px">
+<p class="sub">Escribí la función y los puntos obtenidos en tu estudio analítico. Se mostrarán juntos y podrás comprobar cada coordenada.</p>
+<label style="display:block;margin:8px 0">Función f(x) = <input id="verifyFunction" value="x^2-4" placeholder="Ej.: x^2-4" style="width:min(390px,85%);padding:8px"></label>
+<label style="display:block">Puntos del estudio (x; y, uno por línea)<textarea id="verifyPoints" style="display:block;width:100%;min-height:100px" placeholder="-2; 0
+0; -4
+2; 0"></textarea></label>
+<div class="row" style="margin-top:8px"><button id="verifyCheck" class="primary" type="button">✓ Verificar puntos</button><button id="verifyHint" type="button">💡 Pedir pista al tutor</button></div>
+<div id="verifyResult" aria-live="polite" style="margin-top:9px;line-height:1.6"></div>
+</div>
+<div class="row" style="margin:10px 0"><button id="graphDraw" type="button">Graficar</button><button id="graphInsert" class="primary" type="button">Agregar gráfica a la hoja</button><button id="graphClose" type="button">Cerrar</button></div>
+<svg id="graphSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" style="display:block;width:100%;max-height:55vh;background:white;border:1px solid #cad8e7;border-radius:8px"></svg><p id="graphStatus" class="sub"></p></dialog>
+<dialog id="practiceDialog" style="width:min(740px,96vw);max-height:90vh;overflow:auto">
+<h2>✨ Práctica de Matemática con IA</h2>
+<p class="sub">Generá una actividad, revisala y decidí si querés llevarla a la consigna o directamente a la hoja A4.</p>
+<div class="row"><label>Tema <select id="practiceTopic"><option>Ecuaciones de primer grado</option><option>Sistemas de ecuaciones</option><option>Funciones lineales</option><option>Funciones cuadráticas</option><option>Fracciones</option><option>Proporcionalidad</option><option>Geometría</option><option>Trigonometría</option><option>Estadística</option><option>Probabilidad</option><option>Otro tema</option></select></label><label>Nivel <select id="practiceLevel"><option>7.º</option><option selected>8.º</option><option>9.º</option><option>1.º EMS</option><option>2.º EMS</option><option>3.º EMS</option><option>Adultos</option></select></label></div>
+<div class="row" style="margin-top:8px"><label>Dificultad <select id="practiceDifficulty"><option>Básica</option><option selected>Intermedia</option><option>Avanzada</option></select></label><label>Ejercicios <select id="practiceCount"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></label><label>Tipo <select id="practiceType"><option>Ejercicios</option><option>Problemas contextualizados</option><option>Mixta</option><option>Estudio analítico y gráficas</option></select></label></div>
+<label style="display:block;margin-top:9px">Tema o indicaciones adicionales <input id="practiceCustom" placeholder="Ej.: funciones con raíces enteras, sin soluciones" style="width:100%;padding:8px;border:1px solid #bac8d8;border-radius:7px"></label>
+<div class="row" style="margin:12px 0"><button id="practiceGenerate" class="primary" type="button">✨ Generar actividad</button><button id="practiceClose" type="button">Cerrar</button></div>
+<p id="practiceStatus" class="sub" role="status"></p>
+<label for="practiceResult"><strong>Actividad generada (editable)</strong></label>
+<textarea id="practiceResult" style="width:100%;min-height:220px;border:1px solid #bac8d8;border-radius:8px;padding:10px;line-height:1.5" placeholder="La actividad generada aparecerá aquí. Podés corregirla antes de agregarla."></textarea>
+<div class="row" style="margin-top:9px"><button id="practiceToExercise" type="button">Pasar al cuadro de consigna</button><button id="practiceToPage" class="primary" type="button">Agregar a hoja A4</button></div>
+<p class="sub">La generación necesita abrir la aplicación desde Google Apps Script con Gemini configurado. Revisá siempre las actividades antes de entregarlas.</p>
+</dialog>
 <div id="printArea"></div>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), names=['Pocho','Eva','Edilia','Vicente','Facundo','Agustina','Dora','Quicho','Catalina','Ana','Etel','Juan','Andrés','Cristian'];let tutor='Pocho',tool='pen',pages=[],current=0,down=false,activeStroke=null,referenceURL=null,saveTimer=null;const W=794,H=1123,canvas=$('drawing'),ctx=canvas.getContext('2d');canvas.width=W;canvas.height=H;
 function newData(){return {paper:$('paper').value,strokes:[],texts:[]}}function setStatus(s){$('status').textContent=s;setTimeout(()=>{if($('status').textContent===s)$('status').textContent=''},4000)}function renderTutors(){ $('tutors').replaceChildren();names.forEach(n=>{let b=document.createElement('button');b.className='tutor'+(n===tutor?' active':'');let a=document.createElement('span');a.className='avatar';a.textContent=n==='Pocho'||n==='Quicho'?'👨🏻‍🦳':n==='Facundo'?'👨🏻':n==='Agustina'?'👩🏻': '👤';let label=document.createElement('span');label.textContent=n;b.append(a,label);b.onclick=()=>{tutor=n;$('selectedTutor').textContent=n;renderTutors();queueSave()};$('tutors').append(b)})}
+// Reconoce delimitadores LaTeX y también expresiones sin delimitadores.
+function segmentosMatematicos(texto){
+ texto=String(texto||'').trim();
+ const partes=[];const re=/\$\$([\s\S]*?)\$\$|\\\[([\s\S]*?)\\\]|\\\(([\s\S]*?)\\\)|(?<!\$)\$([^$\n]+)\$(?!\$)/g;
+ let pos=0,m;
+ while((m=re.exec(texto))!==null){
+  if(m.index>pos)partes.push({type:'text',text:texto.slice(pos,m.index)});
+  partes.push({type:'math',text:(m[1]??m[2]??m[3]??m[4]).trim()});pos=re.lastIndex;
+ }
+ if(pos<texto.length)partes.push({type:'text',text:texto.slice(pos)});
+ if(!partes.length&&texto)partes.push({type:'text',text:texto});
+ // Si todo es LaTeX sin delimitadores, interpretarlo como fórmula.
+ if(partes.length===1&&partes[0].type==='text'&&/\\(?:frac|sqrt|sum|int|pi|alpha|beta|theta|left|right|cdot|times|leq|geq|infty|begin|lim)\b/.test(texto))return [{type:'math',text:texto}];
+ return partes.filter(p=>p.text.trim());
+}
+function insertarBloques(texto,x=45,y=165){
+ // Conservar el orden de párrafos y fórmulas, sin dejar bloques fuera de la vista.
+ const partes=segmentosMatematicos(texto);
+ const bloques=[];
+ for(const parte of partes){
+  if(parte.type==='math'){
+   bloques.push({type:'math',text:parte.text.trim(),height:76});
+  }else{
+   for(const parrafo of parte.text.split(/\n\s*\n/)){
+    const limpio=parrafo.trim();if(!limpio)continue;
+    // Textos en párrafos editables. Las líneas largas se ajustan al ancho de la hoja.
+    const lineas=limpio.split('\n').reduce((n,l)=>n+Math.max(1,Math.ceil(l.length/70)),0);
+    bloques.push({type:'text',text:limpio,height:Math.max(64,lineas*24+40)});
+   }
+  }
+ }
+ if(!bloques.length)return 0;
+ const primeraPagina=current;
+ let pagina=current, yy=y;
+ const margenInferior=H-85;
+ for(const bloque of bloques){
+  if(yy+bloque.height>margenInferior && yy>85){
+   // No sobrescribir páginas existentes: insertar una nueva a continuación.
+   pages.splice(pagina+1,0,{paper:pages[pagina].paper,strokes:[],texts:[]});
+   pagina++;yy=100;
+  }
+  pages[pagina].texts.push({x,y:yy,type:bloque.type==='math'?'math':undefined,text:bloque.text});
+  yy+=bloque.height+10;
+ }
+ // Mostrar la primera página, no la última: allí comienza la consigna.
+ current=primeraPagina;
+ drawAll();queueSave();
+ setStatus('Consigna agregada en '+(pagina-primeraPagina+1)+' página(s). Usá Siguiente → para continuar.');
+ return bloques.length;
+}
+function vistaConsigna(){
+ const v=$('exercisePreview');v.replaceChildren();
+ for(const p of segmentosMatematicos($('exercise').value)){
+  const el=document.createElement('div');el.style.whiteSpace='pre-wrap';el.style.margin='5px 0';
+  el.textContent=p.type==='math'?'\\['+p.text+'\\]':p.text;v.append(el);
+ }
+ renderizarMatematica(v);
+}
 function currentPage(){return pages[current]}function drawStroke(st){if(!st.points.length)return;ctx.strokeStyle=st.color;ctx.lineWidth=st.size;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();const p=st.points;ctx.moveTo(p[0].x,p[0].y);if(p.length===1){ctx.lineTo(p[0].x+.01,p[0].y+.01)}else p.slice(1).forEach(q=>ctx.lineTo(q.x,q.y));ctx.stroke()}
-function drawAll(){ctx.clearRect(0,0,W,H);currentPage().strokes.forEach(drawStroke);$('sheet').className='sheet '+(currentPage().paper==='white'?'':currentPage().paper);$('paper').value=currentPage().paper;const layer=$('textLayer');layer.replaceChildren();currentPage().texts.forEach((t,i)=>{let div=document.createElement('div');div.className='typed';div.style.left=(t.x/W*100)+'%';div.style.top=(t.y/H*100)+'%';let ta=document.createElement('textarea');ta.value=t.text;ta.setAttribute('aria-label','Texto en hoja');ta.addEventListener('input',()=>{t.text=ta.value;queueSave()});let del=document.createElement('button');del.className='remove';del.textContent='×';del.title='Eliminar texto';del.onclick=()=>{currentPage().texts.splice(i,1);drawAll();queueSave()};div.append(ta,del);layer.append(div)});$('pageCount').textContent=`Página ${current+1} de ${pages.length}`;$('previous').disabled=current===0;$('next').disabled=current===pages.length-1;$('deletePage').disabled=pages.length===1}
+function ajustarAltoTexto(ta){
+ ta.style.height='auto';ta.style.height=Math.max(48,ta.scrollHeight+5)+'px';
+}
+function activarArrastre(div,t){
+ const asa=document.createElement('div');asa.className='drag-handle';asa.textContent='⠿ Mover bloque';asa.title='Arrastrá desde aquí para mover el bloque';
+ div.prepend(asa);
+ asa.addEventListener('pointerdown',e=>{
+  if(e.button!==0 && e.pointerType==='mouse')return;
+  e.preventDefault();e.stopPropagation();
+  const r=$('sheet').getBoundingClientRect(),x0=e.clientX,y0=e.clientY,ox=t.x,oy=t.y;
+  asa.setPointerCapture(e.pointerId);
+  function mover(ev){
+   t.x=Math.max(0,Math.min(W-70,ox+(ev.clientX-x0)*W/r.width));
+   t.y=Math.max(0,Math.min(H-40,oy+(ev.clientY-y0)*H/r.height));
+   div.style.left=(t.x/W*100)+'%';div.style.top=(t.y/H*100)+'%';
+  }
+  function terminar(){asa.removeEventListener('pointermove',mover);asa.removeEventListener('pointerup',terminar);asa.removeEventListener('pointercancel',terminar);queueSave()}
+  asa.addEventListener('pointermove',mover);asa.addEventListener('pointerup',terminar);asa.addEventListener('pointercancel',terminar);
+ });
+}
+// Laboratorio de gráficas desplegable. No requiere cambios en Código.gs.
+let graphEditing=null;
+const graphState={mode:'function',expression:'2*x+1',points:'-2; -3\n0; 1\n2; 5',table:'-2; -3\n-1; -1\n0; 1\n1; 3',scale:1,connect:true,verifyExpression:'x^2-4',verifyPoints:'-2; 0\n0; -4\n2; 0'};
+function graphSyncUI(){ $('graphMode').value=graphState.mode;$('graphFunction').value=graphState.expression;$('graphPoints').value=graphState.points;$('graphTable').value=graphState.table;$('graphScale').value=graphState.scale;$('graphConnect').checked=graphState.connect;$('verifyFunction').value=graphState.verifyExpression;$('verifyPoints').value=graphState.verifyPoints;$('graphMode').dispatchEvent(new Event('change')); }
+function graphReadUI(){graphState.mode=$('graphMode').value;graphState.expression=$('graphFunction').value;graphState.points=$('graphPoints').value;graphState.table=$('graphTable').value;graphState.scale=Number($('graphScale').value);graphState.connect=$('graphConnect').checked;graphState.verifyExpression=$('verifyFunction').value;graphState.verifyPoints=$('verifyPoints').value;}
+$('graphMode').onchange=()=>{const m=$('graphMode').value; $('graphFunctionPanel').classList.toggle('hidden',m!=='function');$('graphPointsPanel').classList.toggle('hidden',m!=='points');$('graphTablePanel').classList.toggle('hidden',m!=='table');$('graphVerifyPanel').classList.toggle('hidden',m!=='verify');};
+$('openGraph').onclick=()=>{graphEditing=null;graphSyncUI();$('graphDialog').showModal();graphDraw()};
+$('graphClose').onclick=()=>$('graphDialog').close();$('graphDraw').onclick=graphDraw;
+function graphPairs(source){return source.split(/\n/).filter(line=>line.trim()).map(line=>{let m=line.split(/[;,\t]/).map(v=>Number(v.trim().replace(',','.')));if(m.length!==2||!m.every(Number.isFinite))throw Error('Cada fila debe tener dos números separados por punto y coma: x; y');return m})}
+function graphEvaluate(expr,x){
+ let e=expr.replace(/π/g,'pi').replace(/×/g,'*').replace(/−/g,'-').replace(/\s+/g,'').replace(/\^/g,'**');
+ if(!/^[0-9a-zA-Z_.+*/()\-]*$/.test(e))throw Error('La función contiene caracteres no admitidos');
+ const tokens=e.match(/(?:\d+(?:\.\d*)?|\.\d+)|[A-Za-z]+|\*\*|[()+*/\-]/g)||[];
+ if(tokens.join('')!==e)throw Error('Expresión no reconocida');let i=0;
+ function expr0(){let v=term();while(tokens[i]==='+'||tokens[i]==='-'){const op=tokens[i++],r=term();v=op==='+'?v+r:v-r}return v}
+ function term(){let v=unary();while(tokens[i]==='*'||tokens[i]==='/'){const op=tokens[i++],r=unary();v=op==='*'?v*r:v/r}return v}
+ function unary(){if(tokens[i]==='+'){i++;return unary()}if(tokens[i]==='-'){i++;return -unary()}return power()}
+ function power(){let v=atom();if(tokens[i]==='**'){i++;v=Math.pow(v,unary())}return v}
+ function atom(){const t=tokens[i++];if(t==='('){let v=expr0();if(tokens[i++]!==')')throw Error('Falta cerrar paréntesis');return v}if(t==='x')return x;if(t==='pi')return Math.PI;if(t==='e')return Math.E;if(t&&/^(?:\d|\.)/.test(t))return Number(t);const f={sin:Math.sin,cos:Math.cos,tan:Math.tan,sqrt:Math.sqrt,abs:Math.abs,log:Math.log10,ln:Math.log,exp:Math.exp}[t];if(f){if(tokens[i++]!=='(')throw Error('Falta ( después de '+t);const v=expr0();if(tokens[i++]!==')')throw Error('Falta )');return f(v)}throw Error('Símbolo no admitido: '+(t||'?'))}
+ const result=expr0();if(i!==tokens.length)throw Error('Revisá la sintaxis de la función');return result;
+}
+function graphDraw(){try{graphReadUI();const sc=graphState.scale;if(!(sc>0&&sc<=100))throw Error('Elegí una escala mayor que 0 y hasta 100');const svg=$('graphSvg');svg.replaceChildren();const ns='http://www.w3.org/2000/svg';function el(tag,attrs,parent=svg){let e=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));parent.append(e);return e}
+ const cx=300,cy=200,step=35;for(let n=-8;n<=8;n++){let x=cx+n*step;if(x>=0&&x<=600)el('line',{x1:x,y1:0,x2:x,y2:400,stroke:'#e1e8f0'});let y=cy+n*step;if(y>=0&&y<=400)el('line',{x1:0,y1:y,x2:600,y2:y,stroke:'#e1e8f0'})}el('line',{x1:0,y1:cy,x2:600,y2:cy,stroke:'#344e66','stroke-width':1.5});el('line',{x1:cx,y1:0,x2:cx,y2:400,stroke:'#344e66','stroke-width':1.5});for(let n=-8;n<=8;n++){if(!n)continue;const x=cx+n*step,y=cy-n*step;if(x>5&&x<590){const t=el('text',{x,y:cy+13,'font-size':10,'text-anchor':'middle',fill:'#456'});t.textContent=String(Number((n*sc).toFixed(3)))}if(y>10&&y<395){const t=el('text',{x:cx-7,y:y+3,'font-size':10,'text-anchor':'end',fill:'#456'});t.textContent=String(Number((n*sc).toFixed(3)))}}
+ const mapX=x=>cx+x/sc*step,mapY=y=>cy-y/sc*step;
+ if(graphState.mode==='function'||graphState.mode==='verify'){let d='',drawing=false;for(let px=0;px<=600;px+=2){let x=(px-cx)/step*sc,y=graphEvaluate(graphState.mode==='verify'?graphState.verifyExpression:graphState.expression,x),py=mapY(y);if(!Number.isFinite(py)||Math.abs(py)>10000){drawing=false;continue}d+=(drawing?' L':' M')+px+' '+py;drawing=true}el('path',{d,fill:'none',stroke:'#176bb0','stroke-width':2.5});
+ if(graphState.mode==='verify'){const rows=graphPairs(graphState.verifyPoints);rows.forEach(([x,y])=>{const px=mapX(x),py=mapY(y);if(px>=0&&px<=600&&py>=0&&py<=400)el('circle',{cx:px,cy:py,r:5,fill:'#e57b26',stroke:'#fff','stroke-width':1.5})})}}
+ else{let rows=graphPairs(graphState.mode==='points'?graphState.points:graphState.table);if(graphState.mode==='table'&&graphState.connect&&rows.length>1)el('polyline',{points:rows.map(([x,y])=>mapX(x)+','+mapY(y)).join(' '),fill:'none',stroke:'#176bb0','stroke-width':2.5});rows.forEach(([x,y])=>{const px=mapX(x),py=mapY(y);if(px>=0&&px<=600&&py>=0&&py<=400)el('circle',{cx:px,cy:py,r:4.5,fill:'#176bb0'})})}
+ $('graphStatus').textContent='Gráfica lista. Podés agregarla a la hoja.';return true;
+ }catch(err){$('graphStatus').textContent='Revisá los datos: '+err.message;return false}}
+function verificarPuntos(){
+ if(!graphDraw())return;
+ const resultado=$('verifyResult');resultado.replaceChildren();
+ try{
+  const rows=graphPairs(graphState.verifyPoints);
+  if(!rows.length)throw Error('Ingresá al menos un punto.');
+  let correctos=0;
+  rows.forEach(([x,y],i)=>{
+   const calculado=graphEvaluate(graphState.verifyExpression,x);
+   const coincide=Number.isFinite(calculado)&&Math.abs(calculado-y)<=1e-7*Math.max(1,Math.abs(y),Math.abs(calculado));
+   if(coincide)correctos++;
+   const linea=document.createElement('div');linea.style.cssText='padding:5px 8px;margin:4px 0;border-radius:6px;background:'+(coincide?'#e4f5e9':'#fff0e2');
+   linea.textContent=(coincide?'✓ ':'⚠ ')+'P'+(i+1)+' ('+x+'; '+y+'): '+(coincide?'coincide con f('+x+') = '+Number(calculado.toPrecision(9)):'revisá: f('+x+') = '+(Number.isFinite(calculado)?Number(calculado.toPrecision(9)):'no definida')+', pero ingresaste y = '+y);
+   resultado.append(linea);
+  });
+  const resumen=document.createElement('strong');resumen.textContent=correctos===rows.length?'✓ Todos los puntos coinciden con la función.':'Coinciden '+correctos+' de '+rows.length+' puntos. Revisá los señalados.';resultado.prepend(resumen);
+  $('graphStatus').textContent='Verificación realizada. Podés agregar la gráfica con los puntos a la hoja.';
+ }catch(err){resultado.textContent='No se pudo verificar: '+err.message}
+}
+$('verifyCheck').onclick=verificarPuntos;
+$('verifyHint').onclick=()=>{
+ graphReadUI();const datos=graphState.verifyPoints.trim();if(!datos)return alert('Ingresá primero los puntos.');
+ $('graphDialog').close();$('question').value='Estoy estudiando la función f(x)='+graphState.verifyExpression+' y obtuve los puntos (x; y):\n'+datos+'\nAyudame a comprobarlos con una pista, sin darme toda la solución.';
+ $('question').focus();$('question').scrollIntoView({behavior:'smooth',block:'center'});
+ setStatus('Pregunta preparada. Presioná Pedir ayuda para consultar al tutor.');
+};
+$('graphInsert').onclick=()=>{if(!graphDraw())return;const data=new XMLSerializer().serializeToString($('graphSvg'));const url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(data);const state=JSON.parse(JSON.stringify(graphState));const t={x:45,y:205,type:'graph',text:url,graphState:state};if(graphEditing!==null&&currentPage().texts[graphEditing]?.type==='graph'){const old=currentPage().texts[graphEditing];t.x=old.x;t.y=old.y;currentPage().texts[graphEditing]=t}else currentPage().texts.push(t);$('graphDialog').close();drawAll();queueSave();setStatus('Gráfica agregada como bloque movible')};
+function graphEdit(i){const t=currentPage().texts[i];if(!t?.graphState)return;Object.assign(graphState,t.graphState);graphEditing=i;graphSyncUI();$('graphDialog').showModal();graphDraw()}
+
+function drawAll(){
+ ctx.clearRect(0,0,W,H);currentPage().strokes.forEach(drawStroke);
+ $('sheet').className='sheet '+(currentPage().paper==='white'?'':currentPage().paper);
+ $('paper').value=currentPage().paper;
+ const layer=$('textLayer');layer.replaceChildren();
+ currentPage().texts.forEach((t,i)=>{
+  const div=document.createElement('div');div.className='typed';
+  div.style.left=(t.x/W*100)+'%';div.style.top=(t.y/H*100)+'%';
+  activarArrastre(div,t);
+  if(t.type==='math'){
+   div.classList.add('math-typed');
+   const contenido=document.createElement('div');contenido.className='math-content';
+   contenido.textContent='\\['+t.text+'\\]';
+   const editar=document.createElement('button');editar.className='math-edit';editar.textContent='Editar fórmula';
+   editar.onclick=()=>abrirEditorMatematico(i);
+   div.append(contenido,editar);
+  }else{
+   const ta=document.createElement('textarea');ta.value=t.text;
+   ta.setAttribute('aria-label','Texto en hoja');
+   ta.addEventListener('input',()=>{t.text=ta.value;ajustarAltoTexto(ta);queueSave()});
+   div.append(ta);
+   requestAnimationFrame(()=>ajustarAltoTexto(ta));
+  }
+  const del=document.createElement('button');del.className='remove';del.textContent='×';del.title='Eliminar texto';
+  del.onclick=()=>{currentPage().texts.splice(i,1);drawAll();queueSave()};
+  div.append(del);layer.append(div);
+ });
+ renderizarMatematica(layer);
+ $('pageCount').textContent=`Página ${current+1} de ${pages.length}`;
+ $('previous').disabled=current===0;$('next').disabled=current===pages.length-1;
+ $('deletePage').disabled=pages.length===1;
+}
 function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
 canvas.addEventListener('pointerdown',e=>{if(tool==='text'){let p=point(e);currentPage().texts.push({...p,text:''});drawAll();let a=$('textLayer').lastElementChild?.querySelector('textarea');if(a)a.focus();queueSave();return}down=true;canvas.setPointerCapture(e.pointerId);let p=point(e);activeStroke={color:tool==='eraser'?'#ffffff':$('ink').value,size:tool==='eraser'?Number($('thickness').value)*5:Number($('thickness').value),points:[p]};currentPage().strokes.push(activeStroke);drawAll()});canvas.addEventListener('pointermove',e=>{if(!down||!activeStroke)return;activeStroke.points.push(point(e));drawStroke(activeStroke)});function stop(){if(down){down=false;activeStroke=null;queueSave()}}canvas.addEventListener('pointerup',stop);canvas.addEventListener('pointercancel',stop);
-document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b))});$('undo').onclick=()=>{let p=currentPage();if(p.strokes.length)p.strokes.pop();else if(p.texts.length)p.texts.pop();drawAll();queueSave()};$('clear').onclick=()=>{if(confirm('¿Borrar el contenido de esta página?')){pages[current]={...newData(),paper:currentPage().paper};drawAll();queueSave()}};$('newPage').onclick=()=>{pages.splice(current+1,0,newData());current++;drawAll();queueSave()};$('previous').onclick=()=>{if(current>0){current--;drawAll()}};$('next').onclick=()=>{if(current<pages.length-1){current++;drawAll()}};$('deletePage').onclick=()=>{if(pages.length>1&&confirm('¿Eliminar esta página?')){pages.splice(current,1);current=Math.min(current,pages.length-1);drawAll();queueSave()}};$('paper').onchange=()=>{currentPage().paper=$('paper').value;drawAll();queueSave()};$('addExercise').onclick=()=>{let text=$('exercise').value.trim();if(!text)return alert('Primero escribí una consigna.');currentPage().texts.push({x:45,y:155,text:'Consigna: '+text});drawAll();queueSave()};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b))});$('undo').onclick=()=>{let p=currentPage();if(p.strokes.length)p.strokes.pop();else if(p.texts.length)p.texts.pop();drawAll();queueSave()};$('clear').onclick=()=>{if(confirm('¿Borrar el contenido de esta página?')){pages[current]={...newData(),paper:currentPage().paper};drawAll();queueSave()}};$('newPage').onclick=()=>{pages.splice(current+1,0,newData());current++;drawAll();queueSave()};$('previous').onclick=()=>{if(current>0){current--;drawAll()}};$('next').onclick=()=>{if(current<pages.length-1){current++;drawAll()}};$('deletePage').onclick=()=>{if(pages.length>1&&confirm('¿Eliminar esta página?')){pages.splice(current,1);current=Math.min(current,pages.length-1);drawAll();queueSave()}};$('paper').onchange=()=>{currentPage().paper=$('paper').value;drawAll();queueSave()};$('addExercise').onclick=()=>{let text=$('exercise').value.trim();if(!text)return alert('Primero escribí una consigna.');insertarBloques('Consigna: '+text,45,135)};
 function save(){try{let meta={tutor,mode:$('mode').value,kind:$('kind').value,student:$('student').value,group:$('group').value,teacher:$('teacher').value,date:$('date').value,exercise:$('exercise').value,pages,current};localStorage.setItem('pizarra-matematica-v4',JSON.stringify(meta));setStatus('Guardado en este dispositivo')}catch(e){setStatus('No se pudo guardar: almacenamiento lleno o bloqueado')}}function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(save,650)}$('save').onclick=save;['mode','kind','student','group','teacher','date','exercise'].forEach(id=>$(id).addEventListener('change',queueSave));$('mode').addEventListener('change',()=>{$('modeMessage').textContent=$('mode').value==='aula'?'Modo aula: resolución compartida en pantalla.':'Modo individual: trabajo personal en este dispositivo.'});
-try{let stored=JSON.parse(localStorage.getItem('pizarra-matematica-v4')||'null');if(stored&&Array.isArray(stored.pages)&&stored.pages.length){pages=stored.pages;current=Math.min(stored.current||0,pages.length-1);tutor=names.includes(stored.tutor)?stored.tutor:'Pocho';['mode','kind','student','group','teacher','date','exercise'].forEach(id=>{if(stored[id]!=null)$(id).value=stored[id]})}}catch(e){}if(!pages.length)pages=[newData()];if(!$('date').value)$('date').value=new Date().toISOString().slice(0,10);renderTutors();drawAll();$('mode').dispatchEvent(new Event('change'));
+try{let stored=JSON.parse(localStorage.getItem('pizarra-matematica-v4')||'null');if(stored&&Array.isArray(stored.pages)&&stored.pages.length){pages=stored.pages;current=Math.min(stored.current||0,pages.length-1);tutor=names.includes(stored.tutor)?stored.tutor:'Pocho';['mode','kind','student','group','teacher','date','exercise'].forEach(id=>{if(stored[id]!=null)$(id).value=stored[id]})}}catch(e){}if(!pages.length)pages=[newData()];if(!$('date').value)$('date').value=new Date().toISOString().slice(0,10);renderTutors();drawAll();vistaConsigna();$('mode').dispatchEvent(new Event('change'));
 $('referenceFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;if(referenceURL)URL.revokeObjectURL(referenceURL);referenceURL=URL.createObjectURL(file);let view=$('referenceView');view.replaceChildren();view.className='reference';let child;if(file.type==='application/pdf'){child=document.createElement('iframe');child.title='Material de consulta';child.src=referenceURL}else if(file.type.startsWith('image/')){child=document.createElement('img');child.alt='Material de consulta';child.src=referenceURL}else if(file.type==='text/plain'||file.name.toLowerCase().endsWith('.txt')){child=document.createElement('pre');child.style.cssText='white-space:pre-wrap;padding:12px;overflow:auto;height:100%';child.textContent=await file.text()}else{view.textContent='Formato no admitido. Usá PDF, imagen o TXT.';return}child.style.width='100%';child.style.height='100%';child.style.border='0';view.append(child);$('openReference').disabled=false};$('openReference').onclick=()=>{if(referenceURL)window.open(referenceURL,'_blank','noopener')};$('closeReference').onclick=()=>{$('referenceView').classList.toggle('hidden')};
 // Calculadora con analizador limitado: no eval ni ejecución de código arbitrario.
 function calculate(input){let s=input.replace(/π/g,'pi').replace(/×/g,'*').replace(/÷/g,'/').replace(/\s/g,'');if(!s||!/^[0-9a-zA-Z.+*/()^\-]*$/.test(s))throw Error('Expresión inválida');let tokens=s.match(/(?:\d+(?:\.\d*)?|\.\d+)|[A-Za-z]+|[()+*/^\-]/g)||[];if(tokens.join('')!==s)throw Error('Símbolo no admitido');let i=0;function expr(){let a=term();while(tokens[i]==='+'||tokens[i]==='-'){let op=tokens[i++];let b=term();a=op==='+'?a+b:a-b}return a}function term(){let a=power();while(tokens[i]==='*'||tokens[i]==='/'){let op=tokens[i++];let b=power();a=op==='*'?a*b:a/b}return a}function power(){let a=unary();if(tokens[i]==='^'){i++;a=Math.pow(a,power())}return a}function unary(){if(tokens[i]==='-'){i++;return -unary()}if(tokens[i]==='+'){i++;return unary()}return atom()}function atom(){let t=tokens[i++];if(t==='('){let a=expr();if(tokens[i++]!==')')throw Error('Falta )');return a}if(t==='pi')return Math.PI;if(t==='e')return Math.E;if(['sin','cos','tan','sqrt','log','ln','abs'].includes(t)){if(tokens[i++]!=='(')throw Error('Falta (');let a=expr();if(tokens[i++]!==')')throw Error('Falta )');return({sin:Math.sin,cos:Math.cos,tan:Math.tan,sqrt:Math.sqrt,log:Math.log10,ln:Math.log,abs:Math.abs})[t](a)}if(t&&/^\d|^\./.test(t))return Number(t);throw Error('Expresión inválida')}let result=expr();if(i!==tokens.length||!Number.isFinite(result))throw Error('Operación no válida');return result}document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{$('calcInput').value+=b.dataset.c});$('calcEq').onclick=()=>{try{$('calcInput').value=String(calculate($('calcInput').value))}catch(e){alert(e.message)}};$('calcClear').onclick=()=>{$('calcInput').value=''};
-$('askTutor').onclick=()=>{let el=$('tutorResponse');el.classList.remove('hidden');el.textContent=`${tutor} todavía no está conectado a un servicio de IA. Tu consulta no se envió. Cuando conectemos el tutor, podrá analizar el ejercicio y ofrecer pistas.`};$('digitize').onclick=()=>alert('El reconocimiento de escritura manuscrita se incorporará al conectar un servicio de reconocimiento matemático. El original manuscrito se conserva.');
+// Comunicación con Gemini desde la aplicación web de Apps Script.
+function servicioDisponible(){return typeof google!=='undefined' && google.script && google.script.run}
+function modoEvaluacion(){return ['escrito','parcial','examen'].includes($('kind').value.toLowerCase())}
+// Historial local separado por tutor. Se envía un resumen acotado en cada pregunta;
+// no requiere cambios en Código.gs ni guarda conversaciones en un servidor.
+const CHAT_KEY='pizarra-matematica-chat-v1';
+let conversaciones={};
+try{const c=JSON.parse(localStorage.getItem(CHAT_KEY)||'{}');if(c&&typeof c==='object'&&!Array.isArray(c))conversaciones=c}catch(e){}
+function mensajesActuales(){return Array.isArray(conversaciones[tutor])?conversaciones[tutor]:[]}
+function guardarChat(){try{localStorage.setItem(CHAT_KEY,JSON.stringify(conversaciones))}catch(e){setStatus('No se pudo guardar la conversación')}}
+function agregarMensaje(rol,contenido){
+ const historial=mensajesActuales();historial.push({rol,texto:String(contenido).slice(0,4000)});
+ conversaciones[tutor]=historial.slice(-18);guardarChat();mostrarChat();
+}
+function mostrarChat(){
+ const cont=$('tutorChat');cont.replaceChildren();
+ for(const m of mensajesActuales()){
+  const b=document.createElement('div');b.className='chat-msg '+(m.rol==='estudiante'?'student':'assistant');
+  const nombre=document.createElement('strong');nombre.textContent=m.rol==='estudiante'?'Estudiante':tutor;
+  const cuerpo=document.createElement('div');
+  let texto=String(m.texto||'').replace(/```(?:latex|tex|math)?\s*\n?([\s\S]*?)```/gi,(_,f)=>'\\['+f.trim()+'\\]');
+  cuerpo.textContent=texto;b.append(nombre,cuerpo);cont.append(b);
+ }
+ renderizarMatematica(cont);cont.scrollTop=cont.scrollHeight;
+}
+function mensajeTutor(mensaje){
+ const el=$('tutorResponse');el.classList.remove('hidden');el.textContent=String(mensaje??'');
+}
+function preguntaConContexto(pregunta){
+ const previos=mensajesActuales().slice(-8).map(m=>(m.rol==='estudiante'?'Estudiante: ':'Tutor: ')+m.texto.slice(0,500)).join('\n');
+ const intro='Continuá esta tutoría de matemática, una pregunta orientadora por vez, sin repetir el inicio ni dar la solución completa. Recordá el procedimiento y método elegido.\n';
+ const consigna=String($('exercise').value||'').slice(0,600);
+ let prefijo=intro+(consigna?'Consigna: '+consigna+'\n':'')+(previos?'Conversación anterior:\n'+previos+'\n':'');
+ // Respetar el límite de 3500 caracteres del backend, dejando lugar a la pregunta actual.
+ return (prefijo.slice(-Math.max(0,3400-pregunta.length-25))+'\nPregunta actual: '+pregunta).slice(-3490);
+}
+$('clearTutorChat').onclick=()=>{
+ if(!confirm('¿Iniciar una nueva conversación con '+tutor+'?'))return;
+ conversaciones[tutor]=[];guardarChat();mostrarChat();$('tutorResponse').classList.add('hidden');
+};
+$('askTutor').onclick=()=>{
+ const pregunta=$('question').value.trim();
+ if(!pregunta)return alert('Escribí primero tu pregunta matemática.');
+ if(modoEvaluacion())return mensajeTutor('La ayuda con IA está desactivada durante evaluaciones.');
+ if(!servicioDisponible())return mensajeTutor('Para utilizar Gemini, abrí la pizarra desde la aplicación de Google Apps Script autorizada.');
+ const consulta=preguntaConContexto(pregunta);
+ const btn=$('askTutor');btn.disabled=true;mensajeTutor(tutor+' está pensando...');
+ google.script.run.withSuccessHandler(r=>{
+   btn.disabled=false;
+   if(r&&r.ok){agregarMensaje('estudiante',pregunta);agregarMensaje('tutor',r.respuesta);$('question').value='';$('tutorResponse').classList.add('hidden');}
+   else mensajeTutor((r&&(r.error||r.respuesta))||'No se recibió respuesta.');
+ }).withFailureHandler(e=>{btn.disabled=false;mensajeTutor('No se pudo consultar al tutor: '+e.message)})
+ .consultarTutor({tutor,pregunta:consulta,consigna:$('exercise').value,modo:$('kind').value});
+};
+// Enter envía; Shift+Enter agrega una línea.
+$('question').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(!$('askTutor').disabled)$('askTutor').click()}});
+// Al cambiar de tutor, recuperar únicamente su conversación.
+$('tutors').addEventListener('click',e=>{if(e.target.closest('button'))setTimeout(mostrarChat,0)});
+mostrarChat();
+function renderizarMatematica(nodo){
+ if(!window.MathJax||!MathJax.typesetPromise)return;
+ if(MathJax.typesetClear)MathJax.typesetClear([nodo]);
+ MathJax.typesetPromise([nodo]).catch(e=>console.warn('MathJax:',e));
+}
+function vistaReconocida(){
+ const vista=$('recognizedPreview');
+ vista.replaceChildren();for(const p of segmentosMatematicos($('recognizedText').value)){const el=document.createElement('div');el.style.whiteSpace='pre-wrap';el.textContent=p.type==='math'?'\\['+p.text+'\\]':p.text;vista.append(el)}renderizarMatematica(vista);
+}
+function mostrarReconocimiento(texto){
+ $('recognitionPanel').classList.remove('hidden');
+ $('recognizedText').value=texto;
+ vistaReconocida();
+ $('recognitionPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('recognizedText').addEventListener('input',vistaReconocida);
+$('exercise').addEventListener('input',vistaConsigna);
+$('clearExercise').onclick=()=>{
+ const campo=$('exercise');
+ if(campo.value.trim()&&!confirm('¿Borrar la consigna del cuadro para cargar otra? La hoja de resolución no se borrará.'))return;
+ campo.value='';
+ $('exerciseFile').value=''; // Permite seleccionar otra vez el mismo archivo.
+ vistaConsigna();queueSave();campo.focus();setStatus('Consigna borrada. Podés cargar otra.');
+};
+$('uploadExercise').onclick=()=>$('exerciseFile').click();
+$('exerciseFile').onchange=()=>{
+ const f=$('exerciseFile').files[0];if(!f)return;
+ if(!['application/pdf','image/png','image/jpeg','image/webp'].includes(f.type))return alert('Usá un PDF, JPG, PNG o WEBP.');
+ if(f.size>8*1024*1024)return alert('El archivo no puede superar 8 MB.');
+ const reader=new FileReader();reader.onerror=()=>alert('No se pudo leer el archivo.');
+ reader.onload=()=>{const base64=String(reader.result).split(',')[1];enviarReconocimiento(f.type,base64,'consigna',$('uploadExercise'))};
+ reader.readAsDataURL(f);
+};
+window.addEventListener('load',()=>{renderizarMatematica($('textLayer'));if(!$('recognitionPanel').classList.contains('hidden'))vistaReconocida()});
+function enviarReconocimiento(mime,base64,origen,boton){
+ if(modoEvaluacion())return alert('El reconocimiento con IA está desactivado durante evaluaciones.');
+ if(!servicioDisponible())return alert('Abrí la pizarra desde la aplicación de Google Apps Script autorizada.');
+ if(base64.length>11000000)return alert('Archivo demasiado grande. Usá un archivo menor a 8 MB.');
+ boton.disabled=true;const anterior=boton.textContent;boton.textContent='Reconociendo...';
+ google.script.run.withSuccessHandler(r=>{
+  boton.disabled=false;boton.textContent=anterior;
+  if(r && r.ok){if(origen==='consigna'){$('exercise').value=r.texto;vistaConsigna();queueSave();setStatus('Consigna reconocida: revisá antes de agregarla')}else mostrarReconocimiento(r.texto);}
+  else alert((r && r.error)||'No se pudo reconocer el contenido.');
+ }).withFailureHandler(e=>{boton.disabled=false;boton.textContent=anterior;alert('Error: '+e.message)})
+ .digitalizarContenido({mime,base64,origen,modo:$('kind').value});
+}
+$('digitize').onclick=()=>{
+ const pagina=currentPage();
+ if(!pagina.strokes.length)return alert('Primero escribí con el lápiz en la página actual.');
+ // Fondo blanco: el modelo ve los trazos, sin borrar ni modificar la hoja original.
+ const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+ x.fillStyle='#fff';x.fillRect(0,0,W,H);
+ pagina.strokes.forEach(st=>{
+  if(!st.points || !st.points.length)return;
+  x.beginPath();x.strokeStyle=st.color;x.lineWidth=st.size;x.lineCap='round';x.lineJoin='round';
+  x.moveTo(st.points[0].x,st.points[0].y);
+  st.points.slice(1).forEach(p=>x.lineTo(p.x,p.y));
+  if(st.points.length===1)x.lineTo(st.points[0].x+.01,st.points[0].y+.01);
+  x.stroke();
+ });
+ enviarReconocimiento('image/png',c.toDataURL('image/png').split(',')[1],'escritura',$('digitize'));
+};
+$('recognizeReference').onclick=()=>{
+ const archivo=$('referenceFile').files[0];
+ if(!archivo)return alert('Primero seleccioná un archivo PDF o imagen.');
+ const tipos=['application/pdf','image/png','image/jpeg','image/webp'];
+ if(!tipos.includes(archivo.type))return alert('Para reconocer contenido seleccioná un PDF, JPG, PNG o WEBP.');
+ if(archivo.size>8*1024*1024)return alert('El archivo debe pesar menos de 8 MB.');
+ const lector=new FileReader();
+ lector.onload=()=>enviarReconocimiento(archivo.type,String(lector.result).split(',')[1],'archivo',$('recognizeReference'));
+ lector.onerror=()=>alert('No se pudo leer el archivo.');lector.readAsDataURL(archivo);
+};
+$('insertRecognized').onclick=()=>{
+ const texto=$('recognizedText').value.trim();if(!texto)return alert('No hay texto para insertar.');
+ insertarBloques(texto,45,205);setStatus('Contenido agregado a la hoja');
+};
+$('askRecognized').onclick=()=>{
+ const texto=$('recognizedText').value.trim();if(!texto)return alert('Primero reconocé y revisá el texto.');
+ $('question').value='Revisá este procedimiento y dame solo la primera pista, sin resolverlo completo:\n'+texto;
+ $('askTutor').click();
+};
+// Editor matemático táctil (MathLive). Se integra con las hojas existentes.
+let indiceFormula=null;
+const simbolos=[
+ ['a/b','\\frac{#0}{#?}'],['x²','x^{2}'],['xⁿ','x^{#?}'],['√','\\sqrt{#0}'],
+ ['ⁿ√','\\sqrt[#?]{#0}'],['π','\\pi'],['∞','\\infty'],['±','\\pm'],
+ ['≤','\\le'],['≥','\\ge'],['≠','\\ne'],['≈','\\approx'],
+ ['∑','\\sum_{i=1}^{n}'],['∫','\\int_{a}^{b}'],['θ','\\theta'],['α','\\alpha'],
+ ['β','\\beta'],['Δ','\\Delta'],['→','\\to'],['∈','\\in'],
+ ['∩','\\cap'],['∪','\\cup'],['|x|','\\left|#0\\right|'],
+ ['( )','\\left(#0\\right)']
+];
+const mf=$('mathField');
+simbolos.forEach(([etiqueta,latex])=>{
+ const b=document.createElement('button');b.type='button';b.textContent=etiqueta;
+ b.onclick=()=>{if(typeof mf.insert==='function'){mf.focus();mf.insert(latex)}else $('mathEditorStatus').textContent='Esperá a que cargue el editor matemático.'};
+ $('mathButtons').append(b);
+});
+function abrirEditorMatematico(i=null){
+ indiceFormula=i;
+ mf.value=i===null?'':String(currentPage().texts[i].text||'');
+ $('mathEditorStatus').textContent='';
+ $('mathDialog').showModal();
+ setTimeout(()=>mf.focus(),100);
+}
+$('openMathEditor').onclick=()=>abrirEditorMatematico();
+$('mathCancel').onclick=()=>$('mathDialog').close();
+$('mathKeyboard').onclick=()=>{
+ mf.focus();if(window.mathVirtualKeyboard)window.mathVirtualKeyboard.show();
+ else $('mathEditorStatus').textContent='El teclado virtual no está disponible. Usá los botones de símbolos.';
+};
+$('mathSave').onclick=()=>{
+ const latex=String(mf.value||'').trim();
+ if(!latex)return $('mathEditorStatus').textContent='Escribí una expresión matemática.';
+ if(indiceFormula===null)currentPage().texts.push({x:65,y:245,type:'math',text:latex});
+ else currentPage().texts[indiceFormula].text=latex;
+ $('mathDialog').close();drawAll();queueSave();
+};
 function drawExport(page){let c=document.createElement('canvas');c.width=W;c.height=H;let x=c.getContext('2d');page.strokes.forEach(st=>{if(!st.points.length)return;x.beginPath();x.strokeStyle=st.color;x.lineWidth=st.size;x.lineCap='round';x.lineJoin='round';x.moveTo(st.points[0].x,st.points[0].y);st.points.slice(1).forEach(p=>x.lineTo(p.x,p.y));if(st.points.length===1)x.lineTo(st.points[0].x+.01,st.points[0].y+.01);x.stroke()});return c.toDataURL('image/png')}
-$('print').onclick=()=>{let area=$('printArea');area.replaceChildren();pages.forEach((p,index)=>{let sheet=document.createElement('div');sheet.className='print-sheet '+(p.paper==='white'?'':p.paper);let image=document.createElement('img');image.src=drawExport(p);sheet.append(image);p.texts.forEach(t=>{let el=document.createElement('div');el.className='print-text';el.style.left=(t.x/W*100)+'%';el.style.top=(t.y/H*100)+'%';el.textContent=t.text;sheet.append(el)});if(index===0){let heading=document.createElement('div');heading.className='print-heading';heading.textContent=`${$('kind').value.toUpperCase()} DE MATEMÁTICA  |  ${$('student').value||'Sin nombre'}  |  Grupo: ${$('group').value||'—'}  |  Docente: ${$('teacher').value||'—'}  |  Fecha: ${$('date').value}`;sheet.append(heading)}let pageNum=document.createElement('div');pageNum.className='print-page';pageNum.textContent=`Página ${index+1} de ${pages.length}`;sheet.append(pageNum);area.append(sheet)});window.print()};
+// Entrega universal sin cuenta central ni envío automático.
+$('deliverWork').onclick=()=>{
+ $('deliveryInfo').textContent='Estudiante: '+($('student').value.trim()||'Sin nombre')+' · Grupo: '+($('group').value.trim()||'Sin grupo');
+ $('deliveryDialog').showModal();
+};
+$('deliveryClose').onclick=()=>$('deliveryDialog').close();
+$('deliveryPdf').onclick=()=>{$('print').click()};
+$('deliveryMail').onclick=()=>{
+ const destino=$('deliveryEmail').value.trim();
+ const valido=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(destino);
+ if(!valido){$('deliveryEmail').setCustomValidity('Ingresá un correo electrónico válido.');$('deliveryEmail').reportValidity();return;}
+ $('deliveryEmail').setCustomValidity('');
+ const alumno=$('student').value.trim()||'Estudiante';
+ const grupo=$('group').value.trim()||'Sin grupo';
+ const asunto='Trabajo de Matemática - '+alumno+' - '+grupo;
+ const cuerpo='Hola,\n\nAdjunto mi trabajo de Matemática.\n\nEstudiante: '+alumno+'\nGrupo: '+grupo+'\nActividad: '+$('kind').value+'\nFecha: '+$('date').value+'\n\nIMPORTANTE: adjuntar aquí el PDF guardado desde la pizarra antes de enviar.\n';
+ window.location.href='mailto:'+encodeURIComponent(destino)+'?subject='+encodeURIComponent(asunto)+'&body='+encodeURIComponent(cuerpo);
+};
+$('deliveryEmail').addEventListener('input',()=> $('deliveryEmail').setCustomValidity(''));
+$('print').onclick=()=>{let area=$('printArea');area.replaceChildren();pages.forEach((p,index)=>{let sheet=document.createElement('div');sheet.className='print-sheet '+(p.paper==='white'?'':p.paper);let image=document.createElement('img');image.src=drawExport(p);sheet.append(image);p.texts.forEach(t=>{let el=document.createElement('div');el.className='print-text';el.style.left=(t.x/W*100)+'%';el.style.top=(t.y/H*100)+'%';if(t.type==='math'){
+ el.classList.add('math-print');el.textContent='\\['+t.text+'\\]';
+ }else{el.textContent=t.text}sheet.append(el)});if(index===0){let heading=document.createElement('div');heading.className='print-heading';heading.textContent=`${$('kind').value.toUpperCase()} DE MATEMÁTICA  |  ${$('student').value||'Sin nombre'}  |  Grupo: ${$('group').value||'—'}  |  Docente: ${$('teacher').value||'—'}  |  Fecha: ${$('date').value}`;sheet.append(heading)}let pageNum=document.createElement('div');pageNum.className='print-page';pageNum.textContent=`Página ${index+1} de ${pages.length}`;sheet.append(pageNum);area.append(sheet)});
+ const imprimir=()=>window.print();
+ if(window.MathJax&&MathJax.typesetPromise){
+  if(MathJax.typesetClear)MathJax.typesetClear([area]);
+  MathJax.typesetPromise([area]).then(imprimir).catch(imprimir);
+ }else imprimir()};
+
+// Práctica con IA: usa la conexión Gemini ya existente sin exponer claves en el HTML.
+$('openPractice').onclick=()=>{$('practiceDialog').showModal()};
+$('practiceClose').onclick=()=>$('practiceDialog').close();
+$('practiceGenerate').onclick=()=>{
+ const estado=$('practiceStatus'),btn=$('practiceGenerate');
+ if(modoEvaluacion()){estado.textContent='La generación con IA está desactivada durante escritos, parciales y exámenes.';return;}
+ if(!servicioDisponible()){estado.textContent='Abrí la pizarra desde la aplicación de Apps Script para generar actividades con Gemini.';return;}
+ const tema=$('practiceTopic').value==='Otro tema'?($('practiceCustom').value.trim()||'Matemática'):$('practiceTopic').value;
+ const solicitud='Generá una ACTIVIDAD NUEVA de matemática para estudiantes, no una tutoría ni una pista. '+
+ 'Tema: '+tema+'. Nivel: '+$('practiceLevel').value+'. Dificultad: '+$('practiceDifficulty').value+'. '+
+ 'Cantidad exacta de ejercicios o problemas: '+$('practiceCount').value+'. Tipo: '+$('practiceType').value+'. '+
+ 'Indicaciones: '+$('practiceCustom').value.trim()+'. '+
+ 'Respondé SOLO con la actividad, en español, con enunciados completos y expresiones matemáticas en LaTeX delimitadas con \[ y \]. '+
+ 'No incluyas soluciones ni procedimientos. Máximo 2900 caracteres.';
+ btn.disabled=true;estado.textContent='Gemini está preparando la actividad...';
+ google.script.run.withSuccessHandler(r=>{
+  btn.disabled=false;
+  if(r&&r.ok&&r.respuesta){$('practiceResult').value=String(r.respuesta);estado.textContent='Actividad lista. Revisala antes de agregarla.';}
+  else estado.textContent=(r&&(r.error||r.respuesta))||'No se pudo generar la actividad.';
+ }).withFailureHandler(e=>{btn.disabled=false;estado.textContent='Error: '+(e.message||e)})
+ .consultarTutor({tutor,pregunta:solicitud,consigna:'',modo:'Práctica'});
+};
+$('practiceToExercise').onclick=()=>{
+ const texto=$('practiceResult').value.trim();if(!texto)return alert('Primero generá o escribí una actividad.');
+ $('exercise').value=texto;vistaConsigna();queueSave();$('practiceDialog').close();
+ $('exercise').scrollIntoView({behavior:'smooth',block:'center'});setStatus('Actividad cargada en el cuadro de consigna');
+};
+$('practiceToPage').onclick=()=>{
+ const texto=$('practiceResult').value.trim();if(!texto)return alert('Primero generá o escribí una actividad.');
+ insertarBloques(texto,45,135);$('practiceDialog').close();setStatus('Actividad agregada a la hoja');
+};
 })();
 </script></body></html>
