@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Pizarra Matemática Táctil</title>
+<style>
+:root{font-family:system-ui,Arial,sans-serif;color:#17253a}*{box-sizing:border-box}body{margin:0;background:#eaf0f7}.top{display:flex;align-items:center;justify-content:space-between;background:#172a46;color:white;padding:10px 16px;gap:10px}.top h1{font-size:19px;margin:0}.tools{display:flex;gap:7px;align-items:center;flex-wrap:wrap;padding:10px;background:white;border-bottom:1px solid #cbd5e1}button,select,input{font:inherit}button{padding:9px 11px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;cursor:pointer}button.active{background:#dbeafe;border-color:#2563eb;color:#1d4ed8;font-weight:700}button:focus-visible{outline:3px solid #f59e0b}label{display:inline-flex;align-items:center;gap:5px;font-size:14px}.tools input[type=color]{width:38px;height:37px;padding:2px}.tools input[type=range]{width:90px}.board{height:calc(100dvh - 142px);min-height:350px;padding:10px}.surface{width:100%;height:100%;background:white;border:1px solid #cbd5e1;border-radius:8px;overflow:hidden;position:relative;box-shadow:0 2px 10px #172a4620}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}.status{font-size:12px;color:#475569;padding:3px 14px}.mathbar{display:flex;gap:5px;flex-wrap:wrap;padding:7px 10px;background:#e2e8f0}.mathbar button{min-width:37px;padding:5px 9px}@media(max-width:650px){.top h1{font-size:15px}.board{height:calc(100dvh - 225px)}.tools{gap:5px;padding:6px}.tools button{padding:7px}.status{display:none}}
+</style>
+</head>
+<body>
+<header class="top"><h1>✏️ Pizarra Matemática Táctil</h1><button id="fullscreen">⛶ Pantalla completa</button></header>
+<nav class="tools" aria-label="Herramientas">
+<button data-tool="pen" class="active">✏️ Lápiz</button><button data-tool="eraser">◻ Borrador</button><button data-tool="line">／ Recta</button><button data-tool="rect">▭ Rectángulo</button><button data-tool="circle">◯ Circunferencia</button><button data-tool="text">T Texto</button>
+<label>Color <input id="color" type="color" value="#142b49"></label><label>Grosor <input id="size" type="range" min="1" max="30" value="3"><span id="sizeLabel">3</span></label>
+<button id="grid">▦ Cuadrícula</button><button id="axes">＋ Ejes</button><button id="undo">↶ Deshacer</button><button id="redo">↷ Rehacer</button><button id="clear">🗑 Limpiar</button><button id="save">⬇ Guardar PNG</button>
+</nav>
+<div class="mathbar" aria-label="Símbolos matemáticos"><span style="align-self:center;font-size:13px">Símbolos:</span><button data-symbol="π">π</button><button data-symbol="√">√</button><button data-symbol="²">x²</button><button data-symbol="³">x³</button><button data-symbol="∞">∞</button><button data-symbol="≤">≤</button><button data-symbol="≥">≥</button><button data-symbol="≠">≠</button><button data-symbol="∫">∫</button><button data-symbol="∑">∑</button><button data-symbol="θ">θ</button><button data-symbol="Δ">Δ</button><button data-symbol="±">±</button><button data-symbol="÷">÷</button></div>
+<main class="board"><div class="surface"><canvas id="canvas" aria-label="Superficie de dibujo"></canvas></div></main><div class="status">Seleccioná una herramienta y dibujá con el dedo, lápiz táctil o mouse. Los símbolos se colocan tocando la pizarra.</div>
+<script>
+(()=>{'use strict';
+const canvas=document.querySelector('#canvas'),ctx=canvas.getContext('2d'),surface=document.querySelector('.surface');const color=document.querySelector('#color'),size=document.querySelector('#size');let tool='pen',grid=false,axes=false,items=[],redo=[],drawing=null,pointText=null,activePointer=null;
+function dims(){return {w:surface.clientWidth,h:surface.clientHeight}}
+function resize(){let dpr=window.devicePixelRatio||1,{w,h}=dims();canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);render()}
+function line(a,b){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
+function drawItem(o){ctx.save();ctx.strokeStyle=o.color;ctx.fillStyle=o.color;ctx.lineWidth=o.size;ctx.lineCap='round';ctx.lineJoin='round';if(o.type==='pen'||o.type==='eraser'){if(o.type==='eraser'){ctx.strokeStyle='#fff';ctx.lineWidth=o.size*3}if(o.points.length===1){ctx.beginPath();ctx.arc(o.points[0].x,o.points[0].y,ctx.lineWidth/2,0,Math.PI*2);ctx.fillStyle=ctx.strokeStyle;ctx.fill()}else{ctx.beginPath();o.points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke()}}else if(o.type==='line')line(o.a,o.b);else if(o.type==='rect'){ctx.strokeRect(o.a.x,o.a.y,o.b.x-o.a.x,o.b.y-o.a.y)}else if(o.type==='circle'){let r=Math.hypot(o.b.x-o.a.x,o.b.y-o.a.y);ctx.beginPath();ctx.arc(o.a.x,o.a.y,r,0,Math.PI*2);ctx.stroke()}else if(o.type==='text'){ctx.font=`${Math.max(18,o.size*7)}px Arial`;ctx.fillText(o.text,o.a.x,o.a.y)}ctx.restore()}
+function render(){let {w,h}=dims();ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);if(grid){ctx.save();ctx.strokeStyle='#e4edf6';ctx.lineWidth=1;for(let x=0;x<w;x+=25)line({x,y:0},{x,y:h});for(let y=0;y<h;y+=25)line({x:0,y},{x:w,y});ctx.restore()}if(axes){ctx.save();ctx.strokeStyle='#94a3b8';ctx.lineWidth=2;let x=w/2,y=h/2;line({x,y:0},{x,y:h});line({x:0,y},{x:w,y});ctx.restore()}items.forEach(drawItem);if(drawing)drawItem(drawing)}
+function pos(e){let r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+function commit(o){items.push(o);redo=[];render()}
+canvas.addEventListener('pointerdown',e=>{if(activePointer!==null)return;activePointer=e.pointerId;canvas.setPointerCapture(e.pointerId);let p=pos(e);if(tool==='text'){let v=pointText;if(v===null){v=prompt('Escribí la expresión matemática:');}if(v)commit({type:'text',a:p,text:v,color:color.value,size:+size.value});pointText=null;activePointer=null;return}drawing={type:tool,color:color.value,size:+size.value,a:p,b:p,points:[p]};render()});
+canvas.addEventListener('pointermove',e=>{if(!drawing||e.pointerId!==activePointer)return;let p=pos(e);if(drawing.type==='pen'||drawing.type==='eraser')drawing.points.push(p);else drawing.b=p;render()});
+function finish(e){if(e.pointerId!==activePointer)return;if(drawing){if(drawing.type==='pen'||drawing.type==='eraser')drawing.points.push(pos(e));else drawing.b=pos(e);let d=drawing;drawing=null;commit(d)}activePointer=null}
+canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',e=>{if(e.pointerId===activePointer){drawing=null;activePointer=null;render()}});
+document.querySelectorAll('[data-tool]').forEach(b=>b.addEventListener('click',()=>{tool=b.dataset.tool;pointText=null;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x===b))}));document.querySelectorAll('[data-symbol]').forEach(b=>b.addEventListener('click',()=>{tool='text';pointText=b.dataset.symbol;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('active',x.dataset.tool==='text'))}));
+size.addEventListener('input',()=>document.querySelector('#sizeLabel').textContent=size.value);
+document.querySelector('#grid').onclick=e=>{grid=!grid;e.currentTarget.classList.toggle('active',grid);render()};document.querySelector('#axes').onclick=e=>{axes=!axes;e.currentTarget.classList.toggle('active',axes);render()};document.querySelector('#undo').onclick=()=>{if(items.length){redo.push(items.pop());render()}};document.querySelector('#redo').onclick=()=>{if(redo.length){items.push(redo.pop());render()}};
+document.querySelector('#clear').onclick=()=>{if(confirm('¿Borrar todos los dibujos de la pizarra?')){items=[];redo=[];render()}};
+document.querySelector('#save').onclick=()=>{render();let a=document.createElement('a');a.download='pizarra-matematica.png';a.href=canvas.toDataURL('image/png');a.click()};document.querySelector('#fullscreen').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.()};new ResizeObserver(resize).observe(surface);resize();
+})();
+</script>
+</body></html>
